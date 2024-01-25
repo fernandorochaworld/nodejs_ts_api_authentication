@@ -1,7 +1,7 @@
 import express from 'express';
 
-import { getUserByEmail, createUser, getUsers } from "../db/users";
-import { random, authentication } from '../helpers';
+import { getUserByEmail, createUser, getUsers } from "../user/users-db-schema";
+import { random, authentication } from '../../helpers';
 
 export const login = async (req: express.Request, res: express.Response) => {
     try {
@@ -32,10 +32,16 @@ export const login = async (req: express.Request, res: express.Response) => {
         return res.sendStatus(400);
     }
 }
+export const logout = async (req: express.Request, res: express.Response) => {
+    res.cookie('USER-AUTH', null, {
+        domain: 'localhost', path: '/'
+    });
+    return res.status(200).json({ message: 'Loged out sucessfully.' }).end();
+}
 
 export const register = async (req: express.Request, res: express.Response) => {
     try {
-        const { email, password, username} = req.body;
+        const { email, password, username } = req.body;
 
         if (!email || !password || !username) {
             return res.sendStatus(400);
